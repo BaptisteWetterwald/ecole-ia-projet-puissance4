@@ -16,45 +16,51 @@ for i in range(42):
 def alpha_beta_decision(board, turn, ai_level, queue, max_player, current_depth=0):
     alpha = -10
     beta = 10
-    v = -10
-    action = None
+    player = game.current_player()
+    moves = board.get_possible_moves()
+    best_move = moves[0]
+    best_value = -10
     for move in board.get_possible_moves():
         new_board = board.copy()
         new_board.add_disk(move, max_player, False)
         print(new_board.grid)
-        new_v = min_value(new_board, turn + 1, ai_level, alpha, beta, current_depth + 1)
-        if new_v > v:
-            v = new_v
-            action = move
-    queue.put(action)
+        value = min_value(new_board, turn + 1, player%2 + 1, ai_level, alpha, beta, current_depth + 1)
+        if value > best_value:
+            best_value = value
+            best_move = move
+    queue.put(best_move)
 
-def min_value(board, turn, ai_level, alpha, beta, current_depth):
+def min_value(board, turn, player, ai_level, alpha, beta, current_depth):
+    if board.check_victory():
+        return 100
     if current_depth >= ai_level:
         return board.eval(2 - (turn % 2))  # Evaluate the board at the current depth
-    v = 10
-    for move in board.get_possible_moves():
+    value = 10
+    moves = board.get_possible_moves()
+    for move in moves:
         new_board = board.copy()
-        current_player = 2 - (turn % 2)
-        new_board.add_disk(move, current_player, False)
-        v = min(v, max_value(new_board, turn + 1, ai_level, alpha, beta, current_depth + 1))
-        if v <= alpha:
-            return v
-        beta = min(beta, v)
-    return v
+        new_board.add_disk(move, player, False)
+        value = min(value, max_value(new_board, turn + 1, player%2 + 1, ai_level, alpha, beta, current_depth + 1))
+        if value <= alpha:
+            return value
+        beta = min(beta, value)
+    return value
 
-def max_value(board, turn, ai_level, alpha, beta, current_depth):
+def max_value(board, turn, player, ai_level, alpha, beta, current_depth):
+    if board.check_victory():
+        return -100
     if current_depth >= ai_level:
         return board.eval(2 - (turn % 2))  # Evaluate the board at the current depth
-    v = -10
-    for move in board.get_possible_moves():
+    value = -10
+    moves = board.get_possible_moves()
+    for move in moves:
         new_board = board.copy()
-        current_player = 2 - (turn % 2)
-        new_board.add_disk(move, current_player, False)
-        v = max(v, min_value(new_board, turn + 1, ai_level, alpha, beta, current_depth + 1))
-        if v >= beta:
-            return v
-        alpha = max(alpha, v)
-    return v
+        new_board.add_disk(move, player, False)
+        value = max(value, min_value(new_board, turn + 1, player%2 + 1, ai_level, alpha, beta, current_depth + 1))
+        if value >= beta:
+            return value
+        alpha = max(alpha, value)
+    return value
 
 class Board:
     grid = np.array([[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
