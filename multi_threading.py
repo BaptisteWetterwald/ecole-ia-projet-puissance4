@@ -1,13 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 import numpy as np
-import random as rnd
 from threading import Thread
 from queue import Queue
-import tkinter as tk
-from tkinter import ttk
-import numpy as np
-from multiprocessing import Process, Queue
+from multiprocessing import Queue
 
 
 disk_color = ['white', 'red', 'orange']

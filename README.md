@@ -42,4 +42,6 @@ Ensuite, nous avons tenté d'utiliser des threads plutôt que des processus : pl
 IA vs IA lvl 8 **sans** le multithreading : 1min14.73 égalité
 IA vs IA lvl 8 **avec** le multithreading : 1min07.10 avec une victoire (gain de 7 secondes)
 
+Ces benchmarks ont été réalisés avec un processeur IntelCore de 13e génération (i7-13700HX, 16 coeurs)  et une RAM de 32Go.
+
 Le fait que la 2e version ne mène pas à une égalité indique que les IA ne fonctionnent pas exactement de la même manière mais nous n'avons pas trouvé pourquoi. Nous vous mettons tout de même nos essais non concluants dans le fichier ZIP.
