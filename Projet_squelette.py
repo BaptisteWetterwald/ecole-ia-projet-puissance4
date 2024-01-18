@@ -5,6 +5,7 @@ import random as rnd
 from threading import Thread
 from queue import Queue
 
+# rows and columns have been inverted in the grid
 
 disk_color = ['white', 'red', 'orange']
 disks = list()
@@ -33,8 +34,9 @@ def alpha_beta_decision(board, turn, ai_level, queue, max_player, current_depth=
 def min_value(board, turn, player, ai_level, alpha, beta, current_depth):
     if board.check_victory():
         return 100
+
     if current_depth >= ai_level:
-        return board.eval(2 - (turn % 2))  # Evaluate the board at the current depth
+        return board.eval(2 - (turn % 2))
     value = 10
     moves = board.get_possible_moves()
     for move in moves:
@@ -49,6 +51,7 @@ def min_value(board, turn, player, ai_level, alpha, beta, current_depth):
 def max_value(board, turn, player, ai_level, alpha, beta, current_depth):
     if board.check_victory():
         return -100
+
     if current_depth >= ai_level:
         return board.eval(2 - (turn % 2))  # Evaluate the board at the current depth
     value = -10
@@ -66,14 +69,14 @@ class Board:
     grid = np.array([[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]])
 
-
     def eval(self, player):
-        score = self.calculate_score(player)
-        opponent_score = self.calculate_score(3 - player)
+        score = self.compute_score(player)
+        opponent_score = self.compute_score(3 - player)
         return score - opponent_score
 
-    def calculate_score(self, player):
+    def compute_score(self, player):
         score = 0
+
         # Horizontal alignment check
         for line in range(6):
             for horizontal_shift in range(4):
@@ -99,7 +102,6 @@ class Board:
                     2 - vertical_shift] == player:
                     score += 1
         return score
-        
 
     def copy(self):
         new_board = Board()

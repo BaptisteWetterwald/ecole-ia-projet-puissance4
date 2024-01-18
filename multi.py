@@ -90,13 +90,12 @@ class Board:
     grid = np.array([[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],
                      [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]])
 
-
     def eval(self, player):
-        score = self.calculate_score(player)
-        opponent_score = self.calculate_score(3 - player)
+        score = self.compute_score(player)
+        opponent_score = self.compute_score(3 - player)
         return score - opponent_score
 
-    def calculate_score(self, player):
+    def compute_score(self, player):
         score = 0
         # Horizontal alignment check
         for line in range(6):

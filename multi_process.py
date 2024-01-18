@@ -33,7 +33,7 @@ def min_value(board, turn, player, ai_level, alpha, beta, current_depth):
     if board.check_victory():
         return 100
     if current_depth >= ai_level:
-        return board.eval(2 - (turn % 2))  # Evaluate the board at the current depth
+        return board.eval(2 - (turn % 2))
     value = 10
     moves = board.get_possible_moves()
     for move in moves:
@@ -49,7 +49,7 @@ def max_value(board, turn, player, ai_level, alpha, beta, current_depth):
     if board.check_victory():
         return -100
     if current_depth >= ai_level:
-        return board.eval(2 - (turn % 2))  # Evaluate the board at the current depth
+        return board.eval(2 - (turn % 2))
     value = -10
     moves = board.get_possible_moves()
     for move in moves:
@@ -67,11 +67,11 @@ class Board:
                      [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]])
 
     def eval(self, player):
-        score = self.calculate_score(player)
-        opponent_score = self.calculate_score(3 - player)
+        score = self.compute_score(player)
+        opponent_score = self.compute_score(3 - player)
         return score - opponent_score
 
-    def calculate_score(self, player):
+    def compute_score(self, player):
         score = 0
         # Horizontal alignment check
         for line in range(6):
@@ -250,7 +250,6 @@ class Connect4:
                 self.ai_wait_for_move()
 
 
-# Parallelism ---------------------------------------------------------------------------------------------------------
 def parallel_alpha_beta_decision(board, turn, ai_level, queue, max_player, current_depth=0):
     alpha = -10
     beta = 10
@@ -264,7 +263,7 @@ def parallel_alpha_beta_decision(board, turn, ai_level, queue, max_player, curre
         new_board = board.copy()
         new_board.add_disk(move, max_player, False)
         process_args = (new_board, turn + 1, player % 2 + 1, ai_level, alpha, beta, current_depth + 1)
-        p = Process(target=parallel_min_value_wrapper, args=(process_args, queue))
+        p = Process(target=parallel_min_value_target, args=(process_args, queue))
         p.start()
         processes.append(p)
 
@@ -278,8 +277,7 @@ def parallel_alpha_beta_decision(board, turn, ai_level, queue, max_player, curre
 
     queue.put((best_value, best_move))
 
-# Add the following two functions for parallelism:
-def parallel_min_value_wrapper(args, queue):
+def parallel_min_value_target(args, queue):
     result = parallel_min_value(*args)
     queue.put(result)
 
@@ -319,10 +317,8 @@ def parallel_max_value(board, turn, player, ai_level, alpha, beta, current_depth
         best_move = move
     return value, best_move
 
-# GUI ------------------------------------------------------------------------------------------------------------------
 game = Connect4()
 
-# Graphical settings
 width = 700
 row_width = width // 7
 row_height = row_width
@@ -333,7 +329,6 @@ window = tk.Tk()
 window.title("Connect 4")
 canvas1 = tk.Canvas(window, bg="blue", width=width, height=height)
 
-# Drawing the grid
 for i in range(7):
     disks.append(list())
     for j in range(5, -1, -1):
